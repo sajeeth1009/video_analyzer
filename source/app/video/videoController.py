@@ -20,10 +20,12 @@ def track_videos():
 
 @video_api.route('/tracking', methods=['POST'])
 def video_tracking():
+    print("Request: " + str(request.json))
     try:
         video_request = request.json
         video_file = fetch_video(video_request['filename'])
         trackers = generate_trackers(video_request, video_file)
+        print("Response : " + json.dumps(trackers))
         return Response(json.dumps(trackers), mimetype='application/json')
     except ValueError as err:
         return ErrorHandler(err.args[0], err.args[1], err.args[2]).report_error()

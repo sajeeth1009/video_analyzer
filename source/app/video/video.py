@@ -70,16 +70,21 @@ def generate_trackers(video_request, vidcap):
         trackers = {}
         tracker_type = config.get('tracker')
         tracker = set_tracking_algo(tracker_type)
-        ok, frame = vidcap.read()
+        frame = get_frame_at_millisecond(vidcap, video_request['initialTrackerTime'])
         dim = (int(video_request['videoX']), int(video_request['videoY']))
         tracker_dimensions = video_request['trackerDimensions']
         resized_frame = cv2.resize(frame, dim)
         bbox = (tracker_dimensions['x'], tracker_dimensions['y'], tracker_dimensions['width'],
                 tracker_dimensions['height'])
         ok = tracker.init(resized_frame, bbox)
+        #cv2.rectangle(resized_frame, (int(bbox[0]), int(bbox[1])), (int(bbox[0]) + int(bbox[2]), int(bbox[1]) + int(bbox[3])), (0, 255, 0), 2)
+        #cv2.imshow('Video', resized_frame)
+        #cv2.waitKey()
         if not ok:
             raise ValueError('E-1300', 'Failed to read video', '')
-        for millisecond in video_request['requiredTimes']:
+        required_times = video_request['requiredTimes']
+        required_times.sort()
+        for millisecond in required_times:
             frame = get_frame_at_millisecond(vidcap, millisecond)
             if frame is not None:
                 resized_frame = cv2.resize(frame, dim)

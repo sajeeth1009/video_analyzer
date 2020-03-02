@@ -8,5 +8,5 @@ config = {
     'GOTURN': 5,
     'MOSSE': 6,
     'CSRT': 7,
-    "tracker": "TLD"
+    "tracker": "KCF"
 }
