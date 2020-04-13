@@ -107,8 +107,6 @@ def track_obj():
 
 
 def track_object():
-    # Set up tracker.
-    # Instead of MIL, you can also use
     (major_ver, minor_ver, subminor_ver) = (cv2.__version__).split('.')
     tracker_types = ['BOOSTING', 'MIL', 'KCF', 'TLD', 'MEDIANFLOW', 'GOTURN', 'MOSSE', 'CSRT']
     tracker_type = tracker_types[7]
