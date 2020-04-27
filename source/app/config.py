@@ -11,5 +11,6 @@ config = {
     'GOTURN': 5,
     'MOSSE': 6,
     'CSRT': 7,
-    "tracker": "KCF"
+    "tracker": "CSRT",
+    "recommendframerate" : 100, # in milliseconds  --- Modify this to change how frequently frames are sampled for recommendation
 }

@@ -7,6 +7,11 @@ import os
 from source.app.config import config
 
 
+def get_frame_at_millisecond(vidcap, millsecond):
+    vidcap.set(cv2.CAP_PROP_POS_MSEC, millsecond)  # just cue to 20 sec. position
+    return vidcap.read()
+
+
 def yolo_recommendations(video_file, video_request):
     # load the COCO class labels our YOLO model was trained on
     labelsPath = os.path.sep.join([config.get('yolo'), "coco.names"])
@@ -55,7 +60,8 @@ def yolo_recommendations(video_file, video_request):
     # loop over frames from the video file stream
     while True:
         # read the next frame from the file
-        (grabbed, frame) = vs.read()
+        # currentTime = 0.0 if calc_timestamps[-1] == 0.0 else calc_timestamps + config.get("recommendframerate") ''' get_frame_at_millisecond(vs, calc_timestamps[-1])
+        (grabbed, frame) = get_frame_at_millisecond(vs, calc_timestamps[-1])
         # if the frame was not grabbed, then we have reached the end
         # of the stream
         if not grabbed:
@@ -69,7 +75,8 @@ def yolo_recommendations(video_file, video_request):
         # pass of the YOLO object detector, giving us our bounding boxes
         # and associated probabilities
         timestamps.append(vs.get(cv2.CAP_PROP_POS_MSEC))
-        calc_timestamps.append(calc_timestamps[-1] + 1000 / fps)
+        # calc_timestamps.append(calc_timestamps[-1] + 1000 / fps)
+        calc_timestamps.append(calc_timestamps[-1] + config.get("recommendframerate"))
         blob = cv2.dnn.blobFromImage(frame, 1 / 255.0, (416, 416),
                                      swapRB=True, crop=False)
         net.setInput(blob)
