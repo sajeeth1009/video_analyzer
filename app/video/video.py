@@ -4,7 +4,7 @@ import cv2
 import requests
 import subprocess
 
-from source.app.config import config
+from app.config import config
 from requests.exceptions import ConnectionError
 
 

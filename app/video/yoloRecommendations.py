@@ -1,10 +1,9 @@
 import numpy as np
-import argparse
 #import imutils
 import time
 import cv2
 import os
-from source.app.config import config
+from app.config import config
 
 
 def get_frame_at_millisecond(vidcap, millsecond):

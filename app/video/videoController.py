@@ -1,9 +1,8 @@
 from flask import Blueprint, request, Response
 import json
 
-from source.app.video.video import *
-from source.app.util.errorHandler import *
-from source.app.video.yoloRecommendations import yolo_recommendations
+from app.video.video import *
+from app.video.yoloRecommendations import yolo_recommendations
 
 video_api = Blueprint('video_api', __name__)
 

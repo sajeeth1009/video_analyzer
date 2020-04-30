@@ -5,8 +5,6 @@ __pycache__/
 
 .idea/**
 
-source/app/assets/**
-
 # C extensions
 *.so
 
