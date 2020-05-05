@@ -1,7 +1,19 @@
 import sys
+import os
+import logging
 
 from flask import Flask
 from app.video.videoController import video_api
+
+#Create and configure logger
+logging.basicConfig(format='%(asctime)s %(message)s',
+                    filemode='w')
+
+# Creating an object
+logger = logging.getLogger('gunicorn.error')
+
+# Setting the threshold of logger to DEBUG
+logger.setLevel(logging.DEBUG)
 
 app = Flask(__name__)
 
@@ -14,4 +26,8 @@ def live_ping():
     return "Successfully Initialized"
 
 if __name__ == "__main__":
-    app.run(host="0.0.0.0", debug=True, port=5000)
+    logger.info("Initialising Application: Video Service")
+    logger.info("Host - 0.0.0.0")
+    logger.info("Debug - True")
+    logger.info("Port - " + str(os.getenv("HOST_PORT", 5000)))
+    app.run(host=os.getenv("FLASK_HOST", "0.0.0.0"), debug=True, port=os.getenv("HOST_PORT", 5000))

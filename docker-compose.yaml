@@ -1,0 +1,25 @@
+version: '3.1'
+
+networks:
+  app-tier:
+    driver: bridge
+
+volumes:
+  video_data:
+    driver: local
+
+services:
+  videoservice-tier:
+    image: 'analyzer'
+    build: .
+    networks:
+      - app-tier
+    ports:
+      - "5000:5000"
+    volumes:
+      - video_data:/app/app/assets
+    environment:
+      - CORS=http://$BACKEND_HOST:$BACKEND_PORT
+      - BACKEND_URL=http://$BACKEND_HOST:$BACKEND_PORT/
+      - HOST_PORT=5000
+      - MULTER_DEST=/app/app/assets/

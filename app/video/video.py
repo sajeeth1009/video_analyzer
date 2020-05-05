@@ -1,35 +1,54 @@
 import sys
-
+import logging
 import cv2
 import requests
+import os
 import subprocess
 
 from app.config import config
 from requests.exceptions import ConnectionError
 
+# Creating an object
+logger = logging.getLogger('gunicorn.error')
+
+# Setting the threshold of logger to DEBUG
+logger.setLevel(logging.DEBUG)
+
 
 def fetch_video_file(filename):
-    return requests.get(config.get('backendUrl')+'project/files/'+filename)
+    logger.info("Fetching Video File: " + filename)
+    url = os.getenv("BACKEND_URL", "http://localhost:3000/") + 'project/files/'+filename
+    headers = {'User-Agent': 'curl/7.52.1',
+               "accept": '*/*'}
+    logger.info("Requesting Backend at :" + url)
+    resp = requests.get(url, headers=headers)
+    logger.info(resp.raw)
+    logger.info(resp.headers)
+    logger.info(resp.status_code)
+    logger.info(resp.reason)
+    return resp
 
 
 def fetch_video(filename):
     try:
-        video = cv2.VideoCapture("assets/" + filename + ".mp4")
+        logger.info("attempting to fetch file from video volume")
+        video = cv2.VideoCapture(os.getenv("MULTER_DEST") + filename + ".mp4")
         if not video.isOpened():
             file_content = fetch_video_file(filename)
-            file = open("assets/" + filename + ".mp4", "wb")
+            logger.info("Received File Content : " + str(file_content))
+            file = open(os.getenv("MULTER_DEST") + filename + ".mp4", "wb")
             file.write(file_content.content)
             file.close()
-            video = cv2.VideoCapture("assets/" + filename + ".mp4")
+            video = cv2.VideoCapture(os.getenv("MULTER_DEST") + filename + ".mp4")
         return video
     except FileNotFoundError as e:
-        print(e)
+        logger.error(str(e.args[0].args[0]))
         raise ValueError('E-1000', 'Video File was not found', e.args[0].args[0])
     except ConnectionError as e:
-        print(e)
+        logger.error(str(e.args[0].args[0]))
         raise ValueError('E-1100', 'Video File was not be obtained from server', e.args[0].args[0])
     except Exception as e:
-        print(e)
+        logger.error(str(e.args[0].args[0]))
         raise ValueError('E-5000', 'General Error', e.args[0].args[0])
 
 
@@ -43,18 +62,18 @@ def get_length(filename):
 
 
 def generateFrames(videoName, samplingRate):
-    # length = get_length('assets/'+videoName+'/'+videoName+'.mp4')
-    vidcap = cv2.VideoCapture('assets/' + videoName + '/' + videoName + '.mp4')
+    # length = get_length('app/assets/'+videoName+'/'+videoName+'.mp4')
+    vidcap = cv2.VideoCapture(os.getenv("MULTER_DEST") + videoName + '/' + videoName + '.mp4')
     vidcap.set(cv2.CAP_PROP_POS_MSEC, 0)  # just cue to 20 sec. position
     success, image = vidcap.read()
     count = 0
     success = True
     while success:
-        cv2.imwrite("assets/" + videoName + "/frame%d.jpg" % count, image)  # save frame as JPEG file
+        cv2.imwrite(os.getenv("MULTER_DEST") + videoName + "/frame%d.jpg" % count, image)  # save frame as JPEG file
         count += 1
         vidcap.set(cv2.CAP_PROP_POS_MSEC, count * int(samplingRate))
         success, image = vidcap.read()
-        print('Read a new frame: ', success)
+        logger.debug('Read a new frame: ', success)
 
 
 def get_frame_at_millisecond(vidcap, millsecond):
@@ -115,16 +134,16 @@ def track_object():
     else:
         tracker = set_tracking_algo(tracker_type)
     # Read video
-    video = cv2.VideoCapture("assets/bd64f7cabc54345946ad14c2a01e6e29.mp4")
+    video = cv2.VideoCapture(os.getenv("MULTER_DEST") +"bd64f7cabc54345946ad14c2a01e6e29.mp4")
     # Exit if video not opened.
     if not video.isOpened():
-        print
+        logger.debug
         "Could not open video"
         sys.exit()
     # Read first frame.
     ok, frame = video.read()
     if not ok:
-        print
+        logger.debug
         'Cannot read video file'
         sys.exit()
     # Define an initial bounding box

@@ -1,8 +1,7 @@
 config = {
-    "backendUrl": 'http://localhost:3000/',
     'confidence': 0.3,
     'threshold': 0.3,
-    'yolo': 'video/yolo-coco',
+    'yolo': 'app/video/yolo-coco',
     'BOOSTING': 0,
     'MIL': 1,
     'KCF': 2,
