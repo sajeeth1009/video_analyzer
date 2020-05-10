@@ -32,14 +32,14 @@ def fetch_video_file(filename):
 def fetch_video(filename):
     try:
         logger.info("attempting to fetch file from video volume")
-        video = cv2.VideoCapture(os.getenv("MULTER_DEST") + filename + ".mp4")
+        video = cv2.VideoCapture(os.getenv("MULTER_DEST", 'app/assets/') + filename + ".mp4")
         if not video.isOpened():
             file_content = fetch_video_file(filename)
             logger.info("Received File Content : " + str(file_content))
-            file = open(os.getenv("MULTER_DEST") + filename + ".mp4", "wb")
+            file = open(os.getenv("MULTER_DEST", 'app/assets/') + filename + ".mp4", "wb")
             file.write(file_content.content)
             file.close()
-            video = cv2.VideoCapture(os.getenv("MULTER_DEST") + filename + ".mp4")
+            video = cv2.VideoCapture(os.getenv("MULTER_DEST", 'app/assets/') + filename + ".mp4")
         return video
     except FileNotFoundError as e:
         logger.error(str(e.args[0].args[0]))
@@ -63,13 +63,13 @@ def get_length(filename):
 
 def generateFrames(videoName, samplingRate):
     # length = get_length('app/assets/'+videoName+'/'+videoName+'.mp4')
-    vidcap = cv2.VideoCapture(os.getenv("MULTER_DEST") + videoName + '/' + videoName + '.mp4')
+    vidcap = cv2.VideoCapture(os.getenv("MULTER_DEST", 'app/assets/') + videoName + '/' + videoName + '.mp4')
     vidcap.set(cv2.CAP_PROP_POS_MSEC, 0)  # just cue to 20 sec. position
     success, image = vidcap.read()
     count = 0
     success = True
     while success:
-        cv2.imwrite(os.getenv("MULTER_DEST") + videoName + "/frame%d.jpg" % count, image)  # save frame as JPEG file
+        cv2.imwrite(os.getenv("MULTER_DEST", 'app/assets/') + videoName + "/frame%d.jpg" % count, image)  # save frame as JPEG file
         count += 1
         vidcap.set(cv2.CAP_PROP_POS_MSEC, count * int(samplingRate))
         success, image = vidcap.read()
@@ -134,7 +134,7 @@ def track_object():
     else:
         tracker = set_tracking_algo(tracker_type)
     # Read video
-    video = cv2.VideoCapture(os.getenv("MULTER_DEST") +"bd64f7cabc54345946ad14c2a01e6e29.mp4")
+    video = cv2.VideoCapture(os.getenv("MULTER_DEST", 'app/assets/') +"bd64f7cabc54345946ad14c2a01e6e29.mp4")
     # Exit if video not opened.
     if not video.isOpened():
         logger.debug

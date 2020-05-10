@@ -45,7 +45,6 @@ def video_tracking():
 
 @video_api.route('/recommend', methods=['POST'])
 def generate_recommendations():
-    logger.info
     logger.info("Incoming /recommend Request: " + str(request.json))
     try:
         video_request = request.json

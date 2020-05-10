@@ -137,7 +137,7 @@ def yolo_recommendations(video_file, video_request):
         if writer is None:
             # initialize our video writer
             fourcc = cv2.VideoWriter_fourcc(*"mp4v")
-            writer = cv2.VideoWriter(os.getenv("MULTER_DEST")+'out.mp4', fourcc, 30,
+            writer = cv2.VideoWriter(os.getenv("MULTER_DEST", 'app/assets/')+'out.mp4', fourcc, 30,
                                      (frame.shape[1], frame.shape[0]), True)
             # some information on processing single frame
             if total > 0:

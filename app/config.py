@@ -1,5 +1,5 @@
 config = {
-    'confidence': 0.3,
+    'confidence': 0.4,
     'threshold': 0.3,
     'yolo': 'app/video/yolo-coco',
     'BOOSTING': 0,
