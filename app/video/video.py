@@ -22,10 +22,7 @@ def fetch_video_file(filename):
                "accept": '*/*'}
     logger.info("Requesting Backend at :" + url)
     resp = requests.get(url, headers=headers)
-    logger.info(resp.raw)
-    logger.info(resp.headers)
     logger.info(resp.status_code)
-    logger.info(resp.reason)
     return resp
 
 
@@ -61,26 +58,11 @@ def get_length(filename):
     return float(result.stdout)
 
 
-def generateFrames(videoName, samplingRate):
-    # length = get_length('app/assets/'+videoName+'/'+videoName+'.mp4')
-    vidcap = cv2.VideoCapture(os.getenv("MULTER_DEST", 'app/assets/') + videoName + '/' + videoName + '.mp4')
-    vidcap.set(cv2.CAP_PROP_POS_MSEC, 0)  # just cue to 20 sec. position
-    success, image = vidcap.read()
-    count = 0
-    success = True
-    while success:
-        cv2.imwrite(os.getenv("MULTER_DEST", 'app/assets/') + videoName + "/frame%d.jpg" % count, image)  # save frame as JPEG file
-        count += 1
-        vidcap.set(cv2.CAP_PROP_POS_MSEC, count * int(samplingRate))
-        success, image = vidcap.read()
-        logger.debug('Read a new frame: ', success)
-
-
 def get_frame_at_millisecond(vidcap, millsecond):
-    vidcap.set(cv2.CAP_PROP_POS_MSEC, millsecond)  # just cue to 20 sec. position
+    vidcap.set(cv2.CAP_PROP_POS_MSEC, millsecond)
     success, image = vidcap.read()
     if success:
-        return image  # save frame as JPEG file
+        return image
     return None
 
 
@@ -88,7 +70,7 @@ def generate_trackers(video_request, vidcap):
     try:
         trackers = {}
         tracker_type = config.get('tracker')
-        tracker = set_tracking_algo(tracker_type)
+        tracker = set_tracking_algorithm(tracker_type)
         frame = get_frame_at_millisecond(vidcap, video_request['initialTrackerTime'])
         dim = (int(video_request['videoX']), int(video_request['videoY']))
         tracker_dimensions = video_request['trackerDimensions']
@@ -96,9 +78,6 @@ def generate_trackers(video_request, vidcap):
         bbox = (tracker_dimensions['x'], tracker_dimensions['y'], tracker_dimensions['width'],
                 tracker_dimensions['height'])
         ok = tracker.init(resized_frame, bbox)
-        #cv2.rectangle(resized_frame, (int(bbox[0]), int(bbox[1])), (int(bbox[0]) + int(bbox[2]), int(bbox[1]) + int(bbox[3])), (0, 255, 0), 2)
-        #cv2.imshow('Video', resized_frame)
-        #cv2.waitKey()
         if not ok:
             raise ValueError('E-1300', 'Failed to read video', '')
         required_times = video_request['requiredTimes']
@@ -119,71 +98,7 @@ def generate_trackers(video_request, vidcap):
         raise ValueError('E-5000', 'General Error', e.args[0])
 
 
-def track_obj():
-    tracker_type = config.get(config.get('tracker'))
-    tracker = set_tracking_algo(tracker_type)
-
-
-
-def track_object():
-    (major_ver, minor_ver, subminor_ver) = (cv2.__version__).split('.')
-    tracker_types = ['BOOSTING', 'MIL', 'KCF', 'TLD', 'MEDIANFLOW', 'GOTURN', 'MOSSE', 'CSRT']
-    tracker_type = tracker_types[7]
-    if int(major_ver) < 3 & int(minor_ver) < 3:
-        tracker = cv2.Tracker_create(tracker_type)
-    else:
-        tracker = set_tracking_algo(tracker_type)
-    # Read video
-    video = cv2.VideoCapture(os.getenv("MULTER_DEST", 'app/assets/') +"bd64f7cabc54345946ad14c2a01e6e29.mp4")
-    # Exit if video not opened.
-    if not video.isOpened():
-        logger.debug
-        "Could not open video"
-        sys.exit()
-    # Read first frame.
-    ok, frame = video.read()
-    if not ok:
-        logger.debug
-        'Cannot read video file'
-        sys.exit()
-    # Define an initial bounding box
-    bbox = (287, 23, 86, 320)
-    # Uncomment the line below to select a different bounding box
-    bbox = cv2.selectROI(frame, False)
-    # Initialize tracker with first frame and bounding box
-    ok = tracker.init(frame, bbox)
-    while True:
-        # Read a new frame
-        ok, frame = video.read()
-        if not ok:
-            break
-        # Start timer
-        timer = cv2.getTickCount()
-        # Update tracker
-        ok, bbox = tracker.update(frame)
-        # Calculate Frames per second (FPS)
-        fps = cv2.getTickFrequency() / (cv2.getTickCount() - timer);
-        # Draw bounding box
-        if ok:
-            # Tracking success
-            p1 = (int(bbox[0]), int(bbox[1]))
-            p2 = (int(bbox[0] + bbox[2]), int(bbox[1] + bbox[3]))
-            cv2.rectangle(frame, p1, p2, (255, 0, 0), 2, 1)
-        else:
-            # Tracking failure
-            cv2.putText(frame, "Tracking failure detected", (100, 80), cv2.FONT_HERSHEY_SIMPLEX, 0.75, (0, 0, 255), 2)
-        # Display tracker type on frame
-        cv2.putText(frame, tracker_type + " Tracker", (100, 20), cv2.FONT_HERSHEY_SIMPLEX, 0.75, (50, 170, 50), 2);
-        # Display FPS on frame
-        cv2.putText(frame, "FPS : " + str(int(fps)), (100, 50), cv2.FONT_HERSHEY_SIMPLEX, 0.75, (50, 170, 50), 2);
-        # Display result
-        cv2.imshow("Tracking", frame)
-        # Exit if ESC pressed
-        k = cv2.waitKey(1) & 0xff
-        if k == 27: break
-
-
-def set_tracking_algo(tracker_type):
+def set_tracking_algorithm(tracker_type):
     tracker = None
     if tracker_type == 'BOOSTING':
         tracker = cv2.TrackerBoosting_create()

@@ -1,29 +1,16 @@
 from flask import Blueprint, request, Response
 import json
 import logging
-
-# Creating an object
-logger = logging.getLogger('gunicorn.error')
-
-# Setting the threshold of logger to DEBUG
-logger.setLevel(logging.DEBUG)
-
 from app.video.video import *
 from app.util.errorHandler import *
 from app.video.yoloRecommendations import yolo_recommendations
 
+
+logger = logging.getLogger('gunicorn.error')
+
+logger.setLevel(logging.DEBUG)
+
 video_api = Blueprint('video_api', __name__)
-
-
-@video_api.route('/frames/<videoId>/<samplingRate>', methods=['GET'])
-def store_frames(videoId, samplingRate):
-    return generateFrames(videoId, samplingRate)
-
-
-@video_api.route('/tracker')
-def track_videos():
-    track_object()
-    return "success"
 
 
 @video_api.route('/tracking', methods=['POST'])
