@@ -21,7 +21,8 @@ $ git config --global core.autocrlf false
 
 ### 1. Clone the repository
 
-This repository serves as a parent module for our client and server implementation. 
+This repository served as a service module for the [Video Annotation Tool](https://github.com/phev8/video-annotation-tool/tree/extended-video-annotation)
+
 ```bash
 $ git clone https://github.com/sajeeth1009/video_analyzer.git
 ```
@@ -35,7 +36,7 @@ docker run --net=host codenvy/che-ip
 ```
 
 You can open the environment file to update the field `BACKEND_HOST` to the correct IP. Additionally also set up the port of the 
-backend tier for the video annotation tool by specifying it in the field `BACKEND_PORT`
+backend tier for the video annotation tool by specifying it in the field `BACKEND_PORT`. By default this remains at 3000.
 ```bash
 $ cd video_analyzer
 $ nano .env
