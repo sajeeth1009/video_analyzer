@@ -29,7 +29,10 @@ $ git clone https://github.com/sajeeth1009/video_analyzer.git
 
 ### 2. Edit .env
 
-Change `BACKEND_HOST` entry in the `.env` to the IP of the docker daemon that runs the video annotation tool.
+Navigate into the video_analyzer folder and in here first configure the environment variables. The first is the entry `BACKEND_HOST` which tells the video analyzer where the backend for the video annotation tool is running. This is important since the video analyzer needs to connect to the backend to fetch videos to be processed.
+
+Change `BACKEND_HOST` entry in the `.env` to the IP of the docker daemon that runs the [Video Annotation Tool](https://github.com/phev8/video-annotation-tool/tree/extended-video-annotation)
+
 This can be obtained by running the following command on the server where the video annotation tool is running.
 ```bash
 docker run --net=host codenvy/che-ip
@@ -37,8 +40,7 @@ docker run --net=host codenvy/che-ip
 
 Ensure that the docker service is running before running the above command. On windows systems you can use the docker quickstart terminal to determine the IP of the docker daemon.
 
-You can open the environment file to update the field `BACKEND_HOST` to the correct IP. Additionally also set up the port of the 
-backend tier for the video annotation tool by specifying it in the field `BACKEND_PORT`. By default this remains at 3000.
+You can open the environment file to update the field `BACKEND_HOST` to the IP address determines above. Additionally also set up the port of the backend tier for the video annotation tool by specifying it in the field `BACKEND_PORT`. By default this remains at 3000. Leave this as is, unless the backend has been forced to run on a different port.
 ```bash
 $ cd video_analyzer
 $ nano .env
@@ -50,6 +52,7 @@ BACKEND_HOST=172.17.0.1
 BACKEND_PORT=3000
 ```
 
+Similarly, modify the fields `FLASK_HOST` to point to the IP of the docker daemon running the video analyzer software. This can be the same IP as the Video annotation tool if both services are run on the same machine or different IP's if two different docker daemons are used on two different machines. The `FLASK_HOST` represent the IP host of this service while the `FLASK_PORT` represents the port the service runs on. This is set to 5000 by default.
 
 ### 3. Pull containers and bring them up (launch):
 
