@@ -21,5 +21,6 @@ services:
     environment:
       - CORS=http://$BACKEND_HOST:$BACKEND_PORT
       - BACKEND_URL=http://$BACKEND_HOST:$BACKEND_PORT/
-      - HOST_PORT=5000
+      - FLASK_PORT=$FLASK_PORT
+      - FLASK_HOST=$FLASK_HOST
       - MULTER_DEST=/app/app/assets/
