@@ -35,6 +35,8 @@ This can be obtained by running the following command on the server where the vi
 docker run --net=host codenvy/che-ip
 ```
 
+Ensure that the docker service is running before running the above command. On windows systems you can use the docker quickstart terminal to determine the IP of the docker daemon.
+
 You can open the environment file to update the field `BACKEND_HOST` to the correct IP. Additionally also set up the port of the 
 backend tier for the video annotation tool by specifying it in the field `BACKEND_PORT`. By default this remains at 3000.
 ```bash
