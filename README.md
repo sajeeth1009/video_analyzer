@@ -65,7 +65,11 @@ This process will take some time and will install the required python packages a
 When the process is finished, open your browser and go to  `<docker-host-ip>:5000` to check if the instance is up.
 
 
-## Troubleshooting
+## Troubleshooting and Common Errors
+
+### Stuck at git clone.
+
+Ensure that sufficient disk space is present. Depending on available bandwidth this clone might take some time since it has to fetch weights for the Yolo model. Also ensure that git lfs installed and initialised in the directory where the clone is to take place.
 
 ###  Stop and remove containers, networks and volumes
 
