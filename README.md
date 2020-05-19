@@ -67,6 +67,19 @@ When the process is finished, open your browser and go to  `<docker-host-ip>:500
 
 ## Troubleshooting and Common Errors
 
+
+### OpenCV: Transpose not Implemented Error
+
+This occurs since github sometimes doesn't clone the yolo weights correctly. To solve this,
+```bash
+$ cd video_analyzer/app/video/yolo-coco
+$ rm yolov3.weights
+$ !wget "https://pjreddie.com/media/files/yolov3.weights"
+$ cd ../../../
+$ (sudo) docker-compose up --build
+```
+
+
 ### Stuck at git clone.
 
 Ensure that sufficient disk space is present. Depending on available bandwidth this clone might take some time since it has to fetch weights for the Yolo model. Also ensure that git lfs installed and initialised in the directory where the clone is to take place.
