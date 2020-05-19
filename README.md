@@ -67,6 +67,20 @@ When the process is finished, open your browser and go to  `<docker-host-ip>:500
 
 ## Troubleshooting and Common Errors
 
+### Permission errors
+
+You might encounter errors in connecting to docker daemon either on running the command 
+```bash
+$ (sudo) docker-compose up --build
+```
+or on the command 
+
+```bash
+docker run --net=host codenvy/che-ip
+```
+
+In both cases ensure that docker is installed and docker service is running. If that fails, try running the former command through sudo.
+
 
 ### OpenCV: Transpose not Implemented Error
 
