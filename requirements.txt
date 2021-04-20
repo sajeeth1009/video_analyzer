@@ -18,7 +18,7 @@ opencv-python
 opencv-contrib-python
 packaging==20.1
 pluggy==0.13.1
-py==1.8.1
+py==1.10.0
 pycosat==0.6.3
 pycparser==2.19
 pyOpenSSL==19.1.0
